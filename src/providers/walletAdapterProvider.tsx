@@ -1,16 +1,22 @@
 "use client";
 
+import { FC, useMemo } from "react";
+import {
+  ConnectionProvider
+} from "@solana/wallet-adapter-react";
 import {
   WalletProvider
 } from "@solana/wallet-adapter-react";
-import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
-import React, { FC, useMemo } from "react";
+import {
+  WalletModalProvider
+} from "@solana/wallet-adapter-react-ui";
 
 import {
   PhantomWalletAdapter,
-  SolflareWalletAdapter,
+  SolflareWalletAdapter
 } from "@solana/wallet-adapter-wallets";
 
+import { clusterApiUrl } from "@solana/web3.js";
 import "@solana/wallet-adapter-react-ui/styles.css";
 
 type Props = {
@@ -19,21 +25,21 @@ type Props = {
 
 export const WalletAdapterProvider: FC<Props> = ({ children }) => {
 
+  const endpoint = clusterApiUrl("mainnet-beta");
+
   const wallets = useMemo(
     () => [
       new PhantomWalletAdapter(),
       new SolflareWalletAdapter(),
-
-      // MOST IMPORTANT FOR MOBILE:
-      // The wallet modal will automatically show deep links
-      // for Phantom, Solflare, Trust Wallet, Coinbase, etc.
     ],
     []
   );
 
   return (
-    <WalletProvider wallets={wallets} autoConnect>
-      <WalletModalProvider>{children}</WalletModalProvider>
-    </WalletProvider>
+    <ConnectionProvider endpoint={endpoint}>
+      <WalletProvider wallets={wallets} autoConnect>
+        <WalletModalProvider>{children}</WalletModalProvider>
+      </WalletProvider>
+    </ConnectionProvider>
   );
 };
