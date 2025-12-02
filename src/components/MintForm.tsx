@@ -593,7 +593,8 @@ export default function MintForm() {
             <div className="flex items-center justify-between p-4 rounded-xl glass-effect">
               <div>
                 <h3 className="text-sm font-medium text-white">Revoke Mint Authority</h3>
-                <p className="text-xs text-gray-400">Ensures no additional tokens can be minted (+0.001 SOL)</p>
+                <p className="text-xs text-gray-400">Ensures no additional tokens</p>
+                <p className="text-xs text-gray-400">can be minted (+0.0123 SOL)</p>
               </div>
               <Switch
                 checked={revokeMintAuthority}
@@ -611,7 +612,8 @@ export default function MintForm() {
             <div className="flex items-center justify-between p-4 rounded-xl glass-effect">
               <div>
                 <h3 className="text-sm font-medium text-white">Revoke Freeze Authority</h3>
-                <p className="text-xs text-gray-400">Required for liquidity pools (+0.001 SOL)</p>
+                <p className="text-xs text-gray-400">Required for liquidity pools</p>
+                <p className="text-xs text-gray-400">(+0.001 SOL)</p>
               </div>
               <Switch
                 checked={revokeFreezeAuthority}
