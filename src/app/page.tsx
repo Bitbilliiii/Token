@@ -9,6 +9,11 @@ export default function Home() {
     // Create star field
     const starField = document.createElement('div');
     starField.className = 'star-field';
+
+    // FIX: Give star-field its own GPU layer to stop scroll flicker
+    starField.style.willChange = "transform, opacity";
+    starField.style.transform = "translateZ(0)";
+
     document.body.appendChild(starField);
 
     // Create stars with more density
@@ -23,9 +28,9 @@ export default function Home() {
       }
     };
 
-    createStars(150, 'star-small');  // Increased from 100
-    createStars(75, 'star-medium');  // Increased from 50
-    createStars(35, 'star-large');   // Increased from 25
+    createStars(150, 'star-small');
+    createStars(75, 'star-medium');
+    createStars(35, 'star-large');
 
     return () => {
       document.body.removeChild(starField);
@@ -35,15 +40,19 @@ export default function Home() {
   return (
     <>
       <Header />
-      <main className="min-h-screen pt-20 bg-gradient-to-b from-[#060508] via-[#020203] to-black text-white relative overflow-hidden">
-        {/* Gradient Orbs */}
-        <div className="absolute top-0 -left-20 w-96 h-96 bg-[#7C3AED] rounded-full mix-blend-multiply filter blur-[128px] opacity-10 animate-blob"></div>
-        <div className="absolute top-0 -right-20 w-96 h-96 bg-[#EC4899] rounded-full mix-blend-multiply filter blur-[128px] opacity-10 animate-blob animation-delay-2000"></div>
-        <div className="absolute -bottom-32 left-20 w-96 h-96 bg-[#3B82F6] rounded-full mix-blend-multiply filter blur-[128px] opacity-10 animate-blob animation-delay-4000"></div>
 
-        {/* Content Wrapper with additional gradient */}
+      {/* FIX: Promote main wrapper to GPU layer to stop white flashing */}
+      <main className="min-h-screen pt-20 bg-gradient-to-b from-[#060508] via-[#020203] to-black text-white relative overflow-hidden transform-gpu will-change-transform">
+
+        {/* Gradient Orbs — FIX: Promote each orb to GPU layer */}
+        <div className="absolute top-0 -left-20 w-96 h-96 bg-[#7C3AED] rounded-full mix-blend-multiply filter blur-[128px] opacity-10 animate-blob transform-gpu"></div>
+        <div className="absolute top-0 -right-20 w-96 h-96 bg-[#EC4899] rounded-full mix-blend-multiply filter blur-[128px] opacity-10 animate-blob animation-delay-2000 transform-gpu"></div>
+        <div className="absolute -bottom-32 left-20 w-96 h-96 bg-[#3B82F6] rounded-full mix-blend-multiply filter blur-[128px] opacity-10 animate-blob animation-delay-4000 transform-gpu"></div>
+
+        {/* Content Wrapper */}
         <div className="relative min-h-screen bg-gradient-to-b from-transparent via-[#060508]/50 to-black/80">
           <div className="max-w-7xl mx-auto px-4 py-12">
+
             {/* Hero Section */}
             <div className="text-center mb-16 space-y-4">
               <h1 className="text-6xl font-bold bg-gradient-to-r from-[#7C3AED] via-[#EC4899] to-[#3B82F6] bg-clip-text text-transparent">
@@ -111,7 +120,7 @@ export default function Home() {
 
                 <div className="p-8 rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 hover:border-purple-500/30 transition-all duration-300">
                   <h3 className="text-xl font-semibold mb-3 text-white">How many tokens can I create for each decimal amount?</h3>
-                  <p className="text-gray-300">The total supply of tokens depends on the decimal amount you choose. For example: With 6 decimals, you can create up to 9,999,999,999,999,999 tokens (maximum supply). Adjust the decimal amount to fit your token's needs. We recommend using 6 decimals for most tokens.</p>
+                  <p className="text-gray-300">The total supply of tokens depends on the decimal amount you choose. For example: With 6 decimals, you can create up to 9,999,999,999,999,999 tokens. Adjust decimals to fit your token's needs.</p>
                 </div>
               </div>
             </div>
@@ -143,8 +152,10 @@ export default function Home() {
                 </div>
               </div>
             </div>
+
           </div>
         </div>
+
       </main>
     </>
   );
