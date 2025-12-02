@@ -42,7 +42,7 @@ export default function Home() {
       <Header />
 
       {/* FIX: Promote main wrapper to GPU layer to stop white flashing */}
-      <main className="min-h-screen pt-20 bg-gradient-to-b from-[#060508] via-[#020203] to-black text-white relative overflow-visible transform-gpu will-change-transform">
+      <main className="min-h-screen pt-20 bg-gradient-to-b from-[#060508] via-[#020203] to-black text-white relative overflow-hidden transform-gpu will-change-transform">
 
         {/* Gradient Orbs — FIX: Promote each orb to GPU layer */}
         <div className="absolute top-0 -left-20 w-96 h-96 bg-[#7C3AED] rounded-full mix-blend-multiply filter blur-[128px] opacity-10 animate-blob transform-gpu"></div>
