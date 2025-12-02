@@ -9,13 +9,21 @@
   --primary-gradient-end: #EC4899;
 }
 
+/* FIX 1: Solid background + GPU compositing to stop white flicker */
+html, body {
+  background-color: #000 !important;
+  -webkit-transform: translate3d(0,0,0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  background: 
-    radial-gradient(circle at top center, 
+  background:
+    radial-gradient(circle at top center,
       var(--background-start),
       var(--background-end) 70%
     );
@@ -29,6 +37,13 @@ body {
   backdrop-filter: blur(12px);
   border: 1px solid rgba(236, 72, 153, 0.05);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* FIX 2: Prevent header flicker if header uses glass-effect */
+header, .site-header {
+  transform: translateZ(0);
+  will-change: transform;
+  -webkit-backface-visibility: hidden;
 }
 
 /* Card backgrounds */
@@ -98,6 +113,10 @@ input:focus, textarea:focus {
   height: 100%;
   pointer-events: none;
   z-index: -1;
+
+  /* FIX 3: Promote star background to GPU layer so it doesn't flash */
+  transform: translateZ(0);
+  will-change: opacity, transform;
 }
 
 .star {
