@@ -18,10 +18,9 @@ export default function Header() {
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 0);
-      
-      // Update active section based on scroll position
+
       const sections = ['home', 'faq', 'contact'];
-      const scrollPosition = window.scrollY + 100; // Offset for header
+      const scrollPosition = window.scrollY + 100;
 
       for (const section of sections) {
         const element = document.getElementById(section);
@@ -41,7 +40,7 @@ export default function Header() {
 
   const handleNavClick = (e: React.MouseEvent, sectionId: string) => {
     e.preventDefault();
-    
+
     if (sectionId === 'home') {
       window.scrollTo({
         top: 0,
@@ -76,7 +75,7 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 will-change-transform transform-gpu ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 will-change-auto ${
         isScrolled ? 'glass-effect shadow-lg' : 'bg-gradient-to-b from-[#13111C]/80 to-transparent'
       }`}
     >
@@ -90,8 +89,7 @@ export default function Header() {
                 Beta
               </span>
             </Link>
-            
-            {/* Desktop Navigation */}
+
             <nav className="hidden md:flex items-center space-x-6">
               <Link href="#home" onClick={(e) => handleNavClick(e, 'home')} className={getLinkClass('home')}>Home</Link>
               <Link href="#faq" onClick={(e) => handleNavClick(e, 'faq')} className={getLinkClass('faq')}>FAQ</Link>
@@ -100,11 +98,9 @@ export default function Header() {
             </nav>
           </div>
 
-          {/* Right side buttons */}
           <div className="flex items-center space-x-4">
             <WalletMultiButtonDynamic />
-            
-            {/* Mobile menu button */}
+
             <button
               className="md:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -117,8 +113,8 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
-        <nav className={`md:hidden overflow-hidden transition-all duration-300 ${
+        {/* Mobile Nav */}
+        <nav className={`md:hidden overflow-visible transition-all duration-300 ${
           isMenuOpen ? 'max-h-48 mt-4 pb-4' : 'max-h-0'
         }`}>
           <div className="flex flex-col space-y-4">
