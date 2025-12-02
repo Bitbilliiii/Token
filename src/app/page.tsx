@@ -10,14 +10,13 @@ export default function Home() {
     const starField = document.createElement('div');
     starField.className = 'star-field';
 
-    // FIX: Give star-field its own GPU layer to stop scroll flicker
-    starField.style.willChange = "transform, opacity";
-    starField.style.transform = "translateZ(0)";
+    // FIX: REMOVE GPU transforms to avoid mobile overlay blocking
+    starField.style.willChange = "auto";
+    starField.style.transform = "none";
 
     document.body.appendChild(starField);
 
-    // Create stars with more density
-    const createStars = (count: number, className: string) => {
+    const createStars = (count, className) => {
       for (let i = 0; i < count; i++) {
         const star = document.createElement('div');
         star.className = `star ${className}`;
@@ -41,13 +40,13 @@ export default function Home() {
     <>
       <Header />
 
-      {/* FIX: Promote main wrapper to GPU layer to stop white flashing */}
-      <main className="min-h-screen pt-20 bg-gradient-to-b from-[#060508] via-[#020203] to-black text-white relative overflow-hidden transform-gpu will-change-transform">
+      {/* FIX: REMOVE overflow-hidden & GPU transforms */}
+      <main className="min-h-screen pt-20 bg-gradient-to-b from-[#060508] via-[#020203] to-black text-white relative">
 
-        {/* Gradient Orbs — FIX: Promote each orb to GPU layer */}
-        <div className="absolute top-0 -left-20 w-96 h-96 bg-[#7C3AED] rounded-full mix-blend-multiply filter blur-[128px] opacity-10 animate-blob transform-gpu"></div>
-        <div className="absolute top-0 -right-20 w-96 h-96 bg-[#EC4899] rounded-full mix-blend-multiply filter blur-[128px] opacity-10 animate-blob animation-delay-2000 transform-gpu"></div>
-        <div className="absolute -bottom-32 left-20 w-96 h-96 bg-[#3B82F6] rounded-full mix-blend-multiply filter blur-[128px] opacity-10 animate-blob animation-delay-4000 transform-gpu"></div>
+        {/* FIX: Make orbs NON-interactive + no transform */}
+        <div className="absolute top-0 -left-20 w-96 h-96 bg-[#7C3AED] rounded-full mix-blend-multiply filter blur-[128px] opacity-10 animate-blob pointer-events-none z-[-1]"></div>
+        <div className="absolute top-0 -right-20 w-96 h-96 bg-[#EC4899] rounded-full mix-blend-multiply filter blur-[128px] opacity-10 animate-blob animation-delay-2000 pointer-events-none z-[-1]"></div>
+        <div className="absolute -bottom-32 left-20 w-96 h-96 bg-[#3B82F6] rounded-full mix-blend-multiply filter blur-[128px] opacity-10 animate-blob animation-delay-4000 pointer-events-none z-[-1]"></div>
 
         {/* Content Wrapper */}
         <div className="relative min-h-screen bg-gradient-to-b from-transparent via-[#060508]/50 to-black/80">
@@ -98,29 +97,25 @@ export default function Home() {
                 Frequently Asked Questions
               </h2>
               <div className="space-y-6 max-w-3xl mx-auto">
+
                 <div className="p-8 rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 hover:border-purple-500/30 transition-all duration-300">
                   <h3 className="text-xl font-semibold mb-3 text-white">What is the Solana Token Creator?</h3>
-                  <p className="text-gray-300">The Solana Token Creator is a user-friendly tool that allows you to create your own SPL tokens on the Solana blockchain in just a few simple steps—no coding required. It's perfect for beginners and experts alike.</p>
+                  <p className="text-gray-300">The Solana Token Creator lets you create SPL tokens in minutes with zero coding.</p>
                 </div>
 
                 <div className="p-8 rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 hover:border-purple-500/30 transition-all duration-300">
-                  <h3 className="text-xl font-semibold mb-3 text-white">Is it Safe to Create Solana Tokens Here?</h3>
-                  <p className="text-gray-300">Yes, it's completely safe! Our platform uses secure, blockchain-based processes to ensure your tokens are created and delivered directly to your wallet. We do not store or access your private keys.</p>
+                  <h3 className="text-xl font-semibold mb-3 text-white">Is it safe?</h3>
+                  <p className="text-gray-300">Yes. Your wallet creates and receives tokens directly on-chain.</p>
                 </div>
 
                 <div className="p-8 rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 hover:border-purple-500/30 transition-all duration-300">
-                  <h3 className="text-xl font-semibold mb-3 text-white">How much time will the Solana Token Creator Take?</h3>
-                  <p className="text-gray-300">Creating a token takes less than 5 minutes! Once you complete the steps and confirm the transaction, your token will be ready in seconds.</p>
+                  <h3 className="text-xl font-semibold mb-3 text-white">How long does creation take?</h3>
+                  <p className="text-gray-300">Creation takes less than 5 minutes. Tokens appear instantly.</p>
                 </div>
 
                 <div className="p-8 rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 hover:border-purple-500/30 transition-all duration-300">
-                  <h3 className="text-xl font-semibold mb-3 text-white">Which wallet can I use?</h3>
-                  <p className="text-gray-300">You can use any Solana-compatible wallet, such as Phantom, Solflare, or Trust Wallet. Simply connect your wallet to get started.</p>
-                </div>
-
-                <div className="p-8 rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 hover:border-purple-500/30 transition-all duration-300">
-                  <h3 className="text-xl font-semibold mb-3 text-white">How many tokens can I create for each decimal amount?</h3>
-                  <p className="text-gray-300">The total supply of tokens depends on the decimal amount you choose. For example: With 6 decimals, you can create up to 9,999,999,999,999,999 tokens. Adjust decimals to fit your token's needs.</p>
+                  <h3 className="text-xl font-semibold mb-3 text-white">Which wallets?</h3>
+                  <p className="text-gray-300">Phantom, Solflare, TrustWallet, Coinbase Wallet, and more.</p>
                 </div>
               </div>
             </div>
@@ -134,7 +129,7 @@ export default function Home() {
                 <div className="text-center space-y-4">
                   <h3 className="text-xl font-semibold text-white">Get in Touch</h3>
                   <p className="text-gray-300">
-                    Have questions or need support? Join our Telegram community for instant help and updates.
+                    Join our Telegram for instant help.
                   </p>
                   <div className="inline-block">
                     <a 
