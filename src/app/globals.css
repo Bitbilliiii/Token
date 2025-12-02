@@ -63,6 +63,12 @@ header, .site-header {
   z-index: 999999 !important;
 }
 
+.star-field {
+  pointer-events: none !important;
+  position: fixed !important;
+  z-index: -999999 !important;
+}
+
 /* Input fields dark theme */
 input, textarea {
   background: rgba(2, 2, 3, 0.8) !important;
