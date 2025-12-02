@@ -10,7 +10,6 @@ import React, { FC, useMemo } from "react";
 import {
   PhantomWalletAdapter,
   SolflareWalletAdapter,
-  TrustWalletAdapter,
   CoinbaseWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
 
@@ -29,7 +28,6 @@ export const WalletAdapterProvider: FC<Props> = ({ children }) => {
     () => [
       new PhantomWalletAdapter(),
       new SolflareWalletAdapter(),
-      new TrustWalletAdapter(),
       new CoinbaseWalletAdapter(),
 
       // Mobile Wallet Adapter: enables Android/iOS Phantom + Solflare deep linking
