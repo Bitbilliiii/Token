@@ -178,36 +178,6 @@ input:focus, textarea:focus {
   z-index: 99999 !important;
 }
 
-/* -------------------------------------- */
-/* MOBILE CHROME FIX: UNBLOCK WALLET MODAL */
-/* -------------------------------------- */
-
-/* Remove GPU layers from all animated backgrounds */
-.star-field,
-.star-field *,
-
-.animate-blob,
-.animate-blob *,
-
-div[class*="mix-blend"],
-div[class*="blur"],
-div[class*="opacity-"],
-div[class*="transform-gpu"],
-div[class*="filter"],
-
-.bg-gradient-to-b,
-.bg-gradient-to-r {
-
-  pointer-events: none !important;
-  touch-action: none !important;
-
-  transform: none !important;
-  will-change: auto !important;
-
-  z-index: -10 !important;
-}
-
-
 /* ------------------------------- */
 /* TAILWIND UTIL FIX               */
 /* ------------------------------- */
