@@ -265,8 +265,9 @@ export default function MintForm() {
 
             <form onSubmit={handleSubmit} className="space-y-3">
 
-              {/* GRID: NAME / SYMBOL / DECIMALS / SUPPLY / IMAGE */}
+              {/* GRID */}
               <div className="mintx-grid">
+
                 <div className="g-name">
                   <label className="mintx-label">Name</label>
                   <input className="mintx-input" value={tokenName} onChange={e => setTokenName(e.target.value)} required />
@@ -286,6 +287,8 @@ export default function MintForm() {
 
                 <div className="g-image">
                   <label className="mintx-label">Token Logo</label>
+
+                  {/* FIXED: ADDED MISSING WRAPPER ENDING TAG */}
                   <div className="mintx-image-box" onClick={() => fileInputRef.current?.click()}>
                     {!imagePreview ? (
                       <svg className="mintx-upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -295,9 +298,9 @@ export default function MintForm() {
                       <img src={imagePreview} alt="preview" />
                     )}
                   </div>
+
                 </div>
 
-                {/* FIXED — Missing section restored */}
                 <div className="g-supply">
                   <label className="mintx-label">Initial Supply</label>
                   <input className="mintx-input" value={initialSupply} onChange={e => setInitialSupply(e.target.value)} required />
@@ -315,19 +318,18 @@ export default function MintForm() {
 
               <input type="file" ref={fileInputRef} className="sr-only" accept="image/*" onChange={handleImageChange} />
 
-              {/* REVOKE FREEZE + REVOKE MINT (2-column desktop, 1-column mobile) */}
+              {/* TOGGLES */}
               <div className="mintx-toggle-grid">
-                
-                {/* Revoke Freeze */}
+
                 <div className="mintx-toggle-card">
                   <h3 className="text-sm font-medium text-white">
                     Revoke Freeze <span className="text-xs text-gray-400">(required)</span>
                   </h3>
-                  <p className="text-xs text-gray-400 mt-1">
-                    Required to create a liquidity pool
-                  </p>
+                  <p className="text-xs text-gray-400 mt-1">Required to create a liquidity pool</p>
                   <div className="flex justify-between items-center mt-3">
-                    <Switch checked={revokeFreezeAuthority} onChange={setRevokeFreezeAuthority}
+                    <Switch
+                      checked={revokeFreezeAuthority}
+                      onChange={setRevokeFreezeAuthority}
                       className={revokeFreezeAuthority ? 'mintx-switch-active' : 'mintx-switch'}>
                       <span className={revokeFreezeAuthority ? 'mintx-switch-handle mintx-translate' : 'mintx-switch-handle'} />
                     </Switch>
@@ -335,14 +337,13 @@ export default function MintForm() {
                   </div>
                 </div>
 
-                {/* Revoke Mint */}
                 <div className="mintx-toggle-card">
                   <h3 className="text-sm font-medium text-white">Revoke Mint</h3>
-                  <p className="text-xs text-gray-400 mt-1">
-                    Prevents any future increase in supply
-                  </p>
+                  <p className="text-xs text-gray-400 mt-1">Prevents any future increase in supply</p>
                   <div className="flex justify-between items-center mt-3">
-                    <Switch checked={revokeMintAuthority} onChange={setRevokeMintAuthority}
+                    <Switch
+                      checked={revokeMintAuthority}
+                      onChange={setRevokeMintAuthority}
                       className={revokeMintAuthority ? 'mintx-switch-active' : 'mintx-switch'}>
                       <span className={revokeMintAuthority ? 'mintx-switch-handle mintx-translate' : 'mintx-switch-handle'} />
                     </Switch>
@@ -352,12 +353,13 @@ export default function MintForm() {
 
               </div>
 
-              {/* SOCIAL LINKS TOGGLE */}
+              {/* SOCIALS */}
               <div className="mintx-toggle-card flex justify-between items-center">
                 <div>
                   <h3 className="text-sm font-medium text-white">Add Social Links</h3>
                   <p className="text-xs text-gray-400">Optional but recommended</p>
                 </div>
+
                 <Switch checked={showSocials} onChange={setShowSocials}
                   className={showSocials ? 'mintx-switch-active' : 'mintx-switch'}>
                   <span className={showSocials ? 'mintx-switch-handle mintx-translate' : 'mintx-switch-handle'} />
@@ -368,19 +370,30 @@ export default function MintForm() {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="mintx-label">Website</label>
-                    <input className="mintx-input" value={socialLinks.website} onChange={e => handleSocialChange('website', e.target.value)} />
+                    <input className="mintx-input"
+                      value={socialLinks.website}
+                      onChange={e => handleSocialChange('website', e.target.value)} />
                   </div>
+
                   <div>
                     <label className="mintx-label">Twitter</label>
-                    <input className="mintx-input" value={socialLinks.twitter} onChange={e => handleSocialChange('twitter', e.target.value)} />
+                    <input className="mintx-input"
+                      value={socialLinks.twitter}
+                      onChange={e => handleSocialChange('twitter', e.target.value)} />
                   </div>
+
                   <div>
                     <label className="mintx-label">Telegram</label>
-                    <input className="mintx-input" value={socialLinks.telegram} onChange={e => handleSocialChange('telegram', e.target.value)} />
+                    <input className="mintx-input"
+                      value={socialLinks.telegram}
+                      onChange={e => handleSocialChange('telegram', e.target.value)} />
                   </div>
+
                   <div>
                     <label className="mintx-label">Discord</label>
-                    <input className="mintx-input" value={socialLinks.discord} onChange={e => handleSocialChange('discord', e.target.value)} />
+                    <input className="mintx-input"
+                      value={socialLinks.discord}
+                      onChange={e => handleSocialChange('discord', e.target.value)} />
                   </div>
                 </div>
               )}
@@ -427,7 +440,6 @@ export default function MintForm() {
               </div>
             )}
 
-            {/* TOTAL COST BOX */}
             <div className="mintx-small-box mt-3 text-center">
               Total Cost: {(
                 BASE_FEE +
