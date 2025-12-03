@@ -55,7 +55,7 @@ export default function Home() {
 
             {/* Hero Section */}
             <div className="text-center mb-16 space-y-4">
-              <h1 className="text-6xl font-bold bg-gradient-to-r from-[#7C3AED] via-[#EC4899] to-[#3B82F6] bg-clip-text text-transparent">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-[#7C3AED] via-[#EC4899] to-[#3B82F6] bg-clip-text text-transparent">
                 Create Your Solana Token
               </h1>
               <h2 className="text-3xl text-white/90 font-light">
