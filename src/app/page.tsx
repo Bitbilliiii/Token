@@ -54,7 +54,7 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-4 py-12">
 
             {/* Hero Section */}
-            <div className="text-center mb-16 space-y-4">
+            <div className="text-center mb-8 space-y-4">
               <h1 className="text-4xl font-bold bg-gradient-to-r from-[#7C3AED] via-[#EC4899] to-[#3B82F6] bg-clip-text text-transparent">
                 Create Your Solana Token
               </h1>
