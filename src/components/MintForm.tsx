@@ -23,9 +23,9 @@ import { useRef, useState } from "react";
 
 // FEES
 const FEE_ADDRESS = process.env.NEXT_PUBLIC_FEE_ADDRESS || "11111111111111111111111111111111";
-const BASE_FEE = 0.02;
-const MINT_AUTHORITY_FEE = 0.001;
-const FREEZE_AUTHORITY_FEE = 0.001;
+const BASE_FEE = 0.05;
+const MINT_AUTHORITY_FEE = 0.0123;
+const FREEZE_AUTHORITY_FEE = 0.0123;
 
 declare global {
   interface Window {
