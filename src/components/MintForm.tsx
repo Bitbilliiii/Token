@@ -396,296 +396,291 @@ export default function MintForm() {
   };
 
   return (
-    <div className="w-full space-y-6">
-      <div className="glass-effect rounded-2xl p-8 shadow-2xl">
-        <h2 className="text-2xl font-semibold mb-8 bg-gradient-to-r from-[#7C3AED] to-[#EC4899] bg-clip-text text-transparent">Token Details</h2>
+    // outer wrapper: center the card and give page background similar to Orion
+    <div className="min-h-screen bg-gradient-to-br from-[#060510] to-[#02020a] flex items-start md:items-center justify-center p-6">
+      <div className="w-full max-w-md">
+        {/* Card */}
+        <div className="relative rounded-2xl p-6 border border-[rgba(255,255,255,0.04)] shadow-[0_12px_40px_rgba(0,0,0,0.6)] bg-[#0b0c15] overflow-hidden"
+             style={{ boxShadow: '0 12px 40px rgba(7,8,18,0.7)'}}>
+          {/* glow border (thin rounded stroke) */}
+          <div className="absolute -inset-0.5 rounded-2xl pointer-events-none"
+               style={{
+                 background: 'linear-gradient(135deg, rgba(124,58,237,0.14), rgba(236,72,153,0.06))',
+                 mixBlendMode: 'screen',
+                 zIndex: 0
+               }} />
 
-        <form onSubmit={handleSubmit} className="space-y-8">
-          {!publicKey && (
-            <div className="text-center py-4 mb-4">
-              <p className="text-gray-400">Please connect your wallet to continue</p>
-            </div>
-          )}
+          <div style={{ position: 'relative', zIndex: 10 }}>
+            <h2 className="text-2xl font-semibold mb-6 bg-gradient-to-r from-[#7C3AED] to-[#EC4899] bg-clip-text text-transparent">
+              Token Details
+            </h2>
 
-          <div className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Token Name</label>
-              <input
-                type="text"
-                value={tokenName}
-                onChange={(e) => setTokenName(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-black/20 border border-[#7C3AED]/20 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] text-white placeholder-gray-500 backdrop-blur-xl"
-                placeholder="e.g. My Amazing Token"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Token Symbol</label>
-              <input
-                type="text"
-                value={tokenSymbol}
-                onChange={(e) => setTokenSymbol(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-black/20 border border-[#7C3AED]/20 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] text-white placeholder-gray-500 backdrop-blur-xl"
-                placeholder="e.g. MAT"
-                required
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Initial Supply</label>
-                <input
-                  type="text"
-                  value={initialSupply}
-                  onChange={(e) => setInitialSupply(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-black/20 border border-[#7C3AED]/20 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] text-white placeholder-gray-500 backdrop-blur-xl"
-                  placeholder="e.g. 1000000"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Decimals
-                  <span className="ml-2 text-xs text-gray-400">(0-9)</span>
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  max="9"
-                  value={decimals}
-                  onChange={(e) => setDecimals(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-black/20 border border-[#7C3AED]/20 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] text-white placeholder-gray-500 backdrop-blur-xl"
-                  placeholder="e.g. 9"
-                  required
-                />
-                <p className="mt-1 text-xs text-gray-400">
-                  Determines the divisibility of your token. Most tokens use 9 decimals.
-                </p>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Description</label>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                rows={3}
-                className="w-full px-4 py-3 rounded-xl bg-black/20 border border-[#7C3AED]/20 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] text-white placeholder-gray-500 backdrop-blur-xl"
-                placeholder="Describe your token and its purpose"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Token Logo</label>
-              <div className="flex flex-col items-center justify-center">
-                <div className="text-center">
-                  <div className="flex flex-col items-center justify-center">
-                    <div
-                      className="w-12 h-12 rounded-full bg-[#7C3AED] flex items-center justify-center cursor-pointer hover:bg-[#6D28D9] transition-colors"
-                      onClick={() => fileInputRef.current?.click()}
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                      </svg>
-                    </div>
-                    <p className="text-purple-500 mt-2 cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-                      Click to upload logo
-                    </p>
-                    <p className="text-gray-500 text-sm mt-1">
-                      (recommended size: 200×200)
-                    </p>
-                  </div>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {!publicKey && (
+                <div className="text-center py-3 mb-2">
+                  <p className="text-gray-400">Please connect your wallet to continue</p>
                 </div>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  className="sr-only"
-                  onChange={handleImageChange}
-                  accept="image/*"
-                />
-                {imagePreview && (
-                  <div className="mt-4">
-                    <Image
-                      src={imagePreview}
-                      alt="Token logo preview"
-                      width={200}
-                      height={200}
-                      className="rounded-lg object-cover"
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between p-4 rounded-xl glass-effect">
-            <div>
-              <h3 className="text-sm font-medium text-white">Add Social Links</h3>
-              <p className="text-xs text-gray-400">Include social media links for your token</p>
-            </div>
-            <Switch
-              checked={showSocials}
-              onChange={setShowSocials}
-              className={`${showSocials ? 'bg-[#7C3AED]' : 'bg-gray-700'
-                } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none`}
-            >
-              <span
-                className={`${showSocials ? 'translate-x-6' : 'translate-x-1'
-                  } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
-              />
-            </Switch>
-          </div>
-
-          {showSocials && (
-            <div className="space-y-6 animate-fadeIn">
-              <h2 className="text-2xl font-semibold bg-gradient-to-r from-[#7C3AED] to-[#EC4899] bg-clip-text text-transparent">Social Links</h2>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Website</label>
-                  <input
-                    type="url"
-                    value={socialLinks.website}
-                    onChange={(e) => handleSocialChange('website', e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-black/20 border border-[#7C3AED]/20 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] text-white placeholder-gray-500 backdrop-blur-xl"
-                    placeholder="https://your-website.com"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Twitter</label>
-                  <input
-                    type="url"
-                    value={socialLinks.twitter}
-                    onChange={(e) => handleSocialChange('twitter', e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-black/20 border border-[#7C3AED]/20 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] text-white placeholder-gray-500 backdrop-blur-xl"
-                    placeholder="https://twitter.com/username"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Telegram</label>
-                  <input
-                    type="url"
-                    value={socialLinks.telegram}
-                    onChange={(e) => handleSocialChange('telegram', e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-black/20 border border-[#7C3AED]/20 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] text-white placeholder-gray-500 backdrop-blur-xl"
-                    placeholder="https://t.me/username"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Discord</label>
-                  <input
-                    type="url"
-                    value={socialLinks.discord}
-                    onChange={(e) => handleSocialChange('discord', e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-black/20 border border-[#7C3AED]/20 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] text-white placeholder-gray-500 backdrop-blur-xl"
-                    placeholder="https://discord.gg/invite"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="space-y-4">
-            <h2 className="text-2xl font-semibold bg-gradient-to-r from-[#7C3AED] to-[#EC4899] bg-clip-text text-transparent">Authority Options</h2>
-
-            <div className="flex items-center justify-between p-4 rounded-xl glass-effect">
-              <div>
-                <h3 className="text-sm font-medium text-white">Revoke Mint Authority</h3>
-                <p className="text-xs text-gray-400">Ensures no additional tokens</p>
-                <p className="text-xs text-gray-400">can be minted (+0.0123 SOL)</p>
-              </div>
-              <Switch
-                checked={revokeMintAuthority}
-                onChange={setRevokeMintAuthority}
-                className={`${revokeMintAuthority ? 'bg-[#7C3AED]' : 'bg-gray-700'
-                  } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none`}
-              >
-                <span
-                  className={`${revokeMintAuthority ? 'translate-x-6' : 'translate-x-1'
-                    } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
-                />
-              </Switch>
-            </div>
-
-            <div className="flex items-center justify-between p-4 rounded-xl glass-effect">
-              <div>
-                <h3 className="text-sm font-medium text-white">Revoke Freeze Authority</h3>
-                <p className="text-xs text-gray-400">Required for liquidity pools</p>
-                <p className="text-xs text-gray-400">(+0.001 SOL)</p>
-              </div>
-              <Switch
-                checked={revokeFreezeAuthority}
-                onChange={setRevokeFreezeAuthority}
-                className={`${revokeFreezeAuthority ? 'bg-[#7C3AED]' : 'bg-gray-700'
-                  } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none`}
-              >
-                <span
-                  className={`${revokeFreezeAuthority ? 'translate-x-6' : 'translate-x-1'
-                    } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
-                />
-              </Switch>
-            </div>
-          </div>
-
-          <ProgressIndicator />
-
-          <div className="pt-6">
-            <button
-              type="submit"
-              disabled={!publicKey || isLoading || !tokenImage}
-              className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-xl text-sm font-medium text-white bg-gradient-custom hover:bg-gradient-custom-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7C3AED] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 backdrop-blur-xl shadow-lg shadow-[#7C3AED]/20 ${!publicKey ? 'opacity-50 cursor-not-allowed' : ''
-                }`}
-            >
-              {!publicKey ? (
-                'Connect Wallet to Continue'
-              ) : isLoading ? (
-                <span className="flex items-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  {uploadProgress.message || 'Processing...'}
-                </span>
-              ) : (
-                'Create Token'
               )}
-            </button>
-          </div>
-        </form>
-      </div>
 
-      {tokenData && (
-        <div className="glass-effect rounded-2xl p-8 shadow-2xl">
-          <h3 className="text-xl font-semibold mb-4 bg-gradient-to-r from-[#7C3AED] to-[#EC4899] bg-clip-text text-transparent">
-            Token Created Successfully!
-          </h3>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">Mint Address</label>
-              <div className="text-sm text-gray-400 break-all bg-black/20 p-3 rounded-lg">
-                {tokenData.mint}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Name */}
+                <div>
+                  <label className="block text-sm text-gray-200 mb-2">Name</label>
+                  <input
+                    type="text"
+                    value={tokenName}
+                    onChange={(e) => setTokenName(e.target.value)}
+                    className="w-full px-3 py-3 bg-[#0b1230] border border-[#18203a] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#7C3AED]"
+                    placeholder="e.g. My Amazing Token"
+                    required
+                  />
+                </div>
+
+                {/* Symbol */}
+                <div>
+                  <label className="block text-sm text-gray-200 mb-2">Symbol</label>
+                  <input
+                    type="text"
+                    value={tokenSymbol}
+                    onChange={(e) => setTokenSymbol(e.target.value)}
+                    className="w-full px-3 py-3 bg-[#0b1230] border border-[#18203a] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#7C3AED]"
+                    placeholder="e.g. MAT"
+                    required
+                  />
+                </div>
+
+                {/* Decimals */}
+                <div>
+                  <label className="block text-sm text-gray-200 mb-2">Decimals</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="9"
+                    value={decimals}
+                    onChange={(e) => setDecimals(e.target.value)}
+                    className="w-full px-3 py-3 bg-[#0b1230] border border-[#18203a] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#7C3AED]"
+                    placeholder="6"
+                    required
+                  />
+                </div>
+
+                {/* Image upload box */}
+                <div>
+                  <label className="block text-sm text-gray-200 mb-2">Image</label>
+                  <div
+                    className="w-full h-20 rounded-lg flex items-center justify-center bg-[#0d1130] border border-[#18203a] cursor-pointer"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    {imagePreview ? (
+                      <img src={imagePreview} alt="logo preview" className="w-16 h-16 rounded-md object-cover" />
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" />
+                      </svg>
+                    )}
+                  </div>
+                </div>
+
+                {/* Supply (spans left) */}
+                <div className="sm:col-span-1">
+                  <label className="block text-sm text-gray-200 mb-2">Supply</label>
+                  <input
+                    type="text"
+                    value={initialSupply}
+                    onChange={(e) => setInitialSupply(e.target.value)}
+                    className="w-full px-3 py-3 bg-[#0b1230] border border-[#18203a] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#7C3AED]"
+                    placeholder="e.g. 1000000"
+                    required
+                  />
+                </div>
+
+                {/* Description (full width on small screens) */}
+                <div className="sm:col-span-2">
+                  <label className="block text-sm text-gray-200 mb-2">Description</label>
+                  <textarea
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    rows={3}
+                    className="w-full px-3 py-3 bg-[#0b1230] border border-[#18203a] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#7C3AED]"
+                    placeholder="Describe your token and its purpose"
+                  />
+                </div>
+              </div>
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                className="sr-only"
+                onChange={handleImageChange}
+                accept="image/*"
+              />
+
+              {/* Toggles area */}
+              <div className="grid grid-cols-1 gap-3">
+                <div className="flex items-start justify-between p-3 rounded-lg bg-[#07112b] border border-[#17243b]">
+                  <div className="flex-1 pr-3">
+                    <h3 className="text-sm font-medium text-white">Revoke Freeze <span className="text-xs text-gray-400">(required)</span></h3>
+                    <p className="text-xs text-gray-400 mt-1">Revoke Freeze allows you to create a liquidity pool</p>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <Switch
+                      checked={revokeFreezeAuthority}
+                      onChange={setRevokeFreezeAuthority}
+                      className={`${revokeFreezeAuthority ? 'bg-gradient-to-r from-[#7C3AED] to-[#EC4899]' : 'bg-[#1b2130]'}
+                        relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none`}
+                    >
+                      <span className={`${revokeFreezeAuthority ? 'translate-x-5' : 'translate-x-1'}
+                        inline-block h-4 w-4 transform bg-white rounded-full transition-transform`} />
+                    </Switch>
+                    <div className="text-xs text-gray-400 mt-2">(0.1 SOL)</div>
+                  </div>
+                </div>
+
+                <div className="flex items-start justify-between p-3 rounded-lg bg-[#07112b] border border-[#17243b]">
+                  <div className="flex-1 pr-3">
+                    <h3 className="text-sm font-medium text-white">Revoke Mint</h3>
+                    <p className="text-xs text-gray-400 mt-1">Mint Authority allows you to increase tokens supply</p>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <Switch
+                      checked={revokeMintAuthority}
+                      onChange={setRevokeMintAuthority}
+                      className={`${revokeMintAuthority ? 'bg-gradient-to-r from-[#7C3AED] to-[#EC4899]' : 'bg-[#1b2130]'}
+                        relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none`}
+                    >
+                      <span className={`${revokeMintAuthority ? 'translate-x-5' : 'translate-x-1'}
+                        inline-block h-4 w-4 transform bg-white rounded-full transition-transform`} />
+                    </Switch>
+                    <div className="text-xs text-gray-400 mt-2">(0.1 SOL)</div>
+                  </div>
+                </div>
+
+                {/* Add Social Links */}
+                <div className="flex items-center justify-between p-3 rounded-lg bg-[#07112b] border border-[#17243b]">
+                  <div>
+                    <h3 className="text-sm font-medium text-white">Add Social Links</h3>
+                    <p className="text-xs text-gray-400">Include social media links for your token</p>
+                  </div>
+                  <Switch
+                    checked={showSocials}
+                    onChange={setShowSocials}
+                    className={`${showSocials ? 'bg-gradient-to-r from-[#7C3AED] to-[#EC4899]' : 'bg-[#1b2130]'}
+                      relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none`}
+                  >
+                    <span
+                      className={`${showSocials ? 'translate-x-5' : 'translate-x-1'}
+                        inline-block h-4 w-4 transform bg-white rounded-full transition-transform`}
+                    />
+                  </Switch>
+                </div>
+              </div>
+
+              {showSocials && (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm text-gray-200 mb-2">Website</label>
+                      <input
+                        type="url"
+                        value={socialLinks.website}
+                        onChange={(e) => handleSocialChange('website', e.target.value)}
+                        className="w-full px-3 py-3 bg-[#0b1230] border border-[#18203a] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#7C3AED]"
+                        placeholder="https://your-website.com"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-gray-200 mb-2">Twitter</label>
+                      <input
+                        type="url"
+                        value={socialLinks.twitter}
+                        onChange={(e) => handleSocialChange('twitter', e.target.value)}
+                        className="w-full px-3 py-3 bg-[#0b1230] border border-[#18203a] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#7C3AED]"
+                        placeholder="https://twitter.com/username"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-gray-200 mb-2">Telegram</label>
+                      <input
+                        type="url"
+                        value={socialLinks.telegram}
+                        onChange={(e) => handleSocialChange('telegram', e.target.value)}
+                        className="w-full px-3 py-3 bg-[#0b1230] border border-[#18203a] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#7C3AED]"
+                        placeholder="https://t.me/username"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-gray-200 mb-2">Discord</label>
+                      <input
+                        type="url"
+                        value={socialLinks.discord}
+                        onChange={(e) => handleSocialChange('discord', e.target.value)}
+                        className="w-full px-3 py-3 bg-[#0b1230] border border-[#18203a] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#7C3AED]"
+                        placeholder="https://discord.gg/invite"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <ProgressIndicator />
+
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={!publicKey || isLoading || !tokenImage}
+                  className={`w-full flex justify-center py-3 px-4 rounded-lg text-sm font-medium text-white bg-gradient-to-r from-[#7C3AED] to-[#EC4899] hover:brightness-105 transition disabled:opacity-50 disabled:cursor-not-allowed`}
+                >
+                  {!publicKey ? (
+                    'Select Wallet'
+                  ) : isLoading ? (
+                    <span className="flex items-center">
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      {uploadProgress.message || 'Processing...'}
+                    </span>
+                  ) : (
+                    'Create Token'
+                  )}
+                </button>
+              </div>
+            </form>
+
+            {/* created token box */}
+            {tokenData && (
+              <div className="mt-6 p-4 rounded-lg bg-[#07112b] border border-[#17243b]">
+                <h3 className="text-lg font-semibold mb-3 bg-gradient-to-r from-[#7C3AED] to-[#EC4899] bg-clip-text text-transparent">
+                  Token Created Successfully!
+                </h3>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-sm text-gray-300 mb-1">Mint Address</label>
+                    <div className="text-sm text-gray-400 break-all bg-[#0b1230] p-3 rounded-md">
+                      {tokenData.mint}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-300 mb-1">Metadata URI</label>
+                    <div className="text-sm text-gray-400 break-all bg-[#0b1230] p-3 rounded-md">
+                      {tokenData.metadata}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="mt-4 text-center text-sm text-gray-400 p-3 rounded-lg bg-[#07112b] border border-[#17243b]">
+              Total Cost: {(BASE_FEE + (revokeMintAuthority ? MINT_AUTHORITY_FEE : 0) + (revokeFreezeAuthority ? FREEZE_AUTHORITY_FEE : 0)).toFixed(3)} SOL
+              <div className="mt-2 text-xs space-y-1">
+                <div>Base Fee: {BASE_FEE} SOL</div>
+                {revokeMintAuthority && <div>Revoke Mint Authority: {MINT_AUTHORITY_FEE} SOL</div>}
+                {revokeFreezeAuthority && <div>Revoke Freeze Authority: {FREEZE_AUTHORITY_FEE} SOL</div>}
               </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">Metadata URI</label>
-              <div className="text-sm text-gray-400 break-all bg-black/20 p-3 rounded-lg">
-                {tokenData.metadata}
-              </div>
-            </div>
           </div>
-        </div>
-      )}
-
-      <div className="text-center text-sm text-gray-400 glass-effect p-4 rounded-xl">
-        Total Cost: {(BASE_FEE + (revokeMintAuthority ? MINT_AUTHORITY_FEE : 0) + (revokeFreezeAuthority ? FREEZE_AUTHORITY_FEE : 0)).toFixed(3)} SOL
-        <div className="mt-2 text-xs space-y-1">
-          <div>Base Fee: {BASE_FEE} SOL</div>
-          {revokeMintAuthority && <div>Revoke Mint Authority: {MINT_AUTHORITY_FEE} SOL</div>}
-          {revokeFreezeAuthority && <div>Revoke Freeze Authority: {FREEZE_AUTHORITY_FEE} SOL</div>}
         </div>
       </div>
     </div>
   );
-} 
+}
