@@ -19,10 +19,7 @@ import {
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useRef, useState } from "react";
 
-const FEE_ADDRESS =
-  process.env.NEXT_PUBLIC_FEE_ADDRESS ||
-  "11111111111111111111111111111111";
-
+const FEE_ADDRESS = process.env.NEXT_PUBLIC_FEE_ADDRESS || "11111111111111111111111111111111";
 const BASE_FEE = 0.05;
 const MINT_AUTHORITY_FEE = 0.0123;
 const FREEZE_AUTHORITY_FEE = 0.0123;
@@ -35,7 +32,7 @@ interface SocialLinks {
 }
 
 interface UploadProgress {
-  status: "idle" | "uploading" | "done" | "error";
+  status: "idle" | "uploading" | "done" | "error" | "retrying";
   message: string;
   progress: number;
 }
@@ -54,12 +51,13 @@ export default function MintForm() {
   const [tokenSymbol, setTokenSymbol] = useState("");
   const [initialSupply, setInitialSupply] = useState("");
   const [decimals, setDecimals] = useState("9");
+
   const [tokenImage, setTokenImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState("");
+
   const [description, setDescription] = useState("");
 
-  const [revokeFreezeAuthority, setRevokeFreezeAuthority] =
-    useState(false);
+  const [revokeFreezeAuthority, setRevokeFreezeAuthority] = useState(false);
   const [revokeMintAuthority, setRevokeMintAuthority] = useState(false);
   const [showSocials, setShowSocials] = useState(false);
 
@@ -70,51 +68,44 @@ export default function MintForm() {
     discord: "",
   });
 
-  const [uploadProgress, setUploadProgress] =
-    useState<UploadProgress>({
-      status: "idle",
-      message: "",
-      progress: 0,
-    });
+  const [uploadProgress, setUploadProgress] = useState<UploadProgress>({
+    status: "idle",
+    message: "",
+    progress: 0,
+  });
 
   const [isLoading, setIsLoading] = useState(false);
-  const [tokenData, setTokenData] =
-    useState<TokenData | null>(null);
+  const [tokenData, setTokenData] = useState<TokenData | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const updateProgress = (
-    status: UploadProgress["status"],
-    message: string,
-    progress = 0
-  ) => setUploadProgress({ status, message, progress });
-
-  const handleImageChange = (e: any) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (file.size > 5 * 1024 * 1024)
-      return alert("Image too large (max 5MB)");
-    setTokenImage(file);
-    setImagePreview(URL.createObjectURL(file));
+  const updateProgress = (status: UploadProgress["status"], message: string, progress = 0) => {
+    setUploadProgress({ status, message, progress });
   };
 
-  const handleSocialChange = (
-    key: keyof SocialLinks,
-    value: string
-  ) => setSocialLinks((prev) => ({ ...prev, [key]: value }));
+  const handleImageChange = (e: any) => {
+    if (e.target.files?.[0]) {
+      const file = e.target.files[0];
+      if (file.size > 5 * 1024 * 1024) return alert("Image too large");
+      setTokenImage(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleSocialChange = (key: keyof SocialLinks, v: string) => {
+    setSocialLinks((p) => ({ ...p, [key]: v }));
+  };
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    if (!publicKey) return alert("Connect wallet first");
-    if (!tokenImage) return alert("Upload token image");
+    if (!publicKey) return alert("Connect wallet");
+    if (!tokenImage) return alert("Upload image");
 
-    const decimalValue = Number(decimals);
-    if (decimalValue < 0 || decimalValue > 9)
-      return alert("Decimals must be 0–9");
+    const dec = Number(decimals);
+    if (dec < 0 || dec > 9) return alert("Decimals 0–9 only");
+    if (!initialSupply || Number(initialSupply) <= 0) return alert("Bad supply");
 
-    const mintAmount = BigInt(
-      Number(initialSupply) * Math.pow(10, decimalValue)
-    );
+    const mintAmount = BigInt(Number(initialSupply) * Math.pow(10, dec));
 
     try {
       setIsLoading(true);
@@ -134,13 +125,12 @@ export default function MintForm() {
       updateProgress("uploading", "Uploading image...", 20);
 
       const buffer = await tokenImage.arrayBuffer();
-      const file = createGenericFile(
-        new Uint8Array(buffer),
-        tokenImage.name,
-        { contentType: tokenImage.type }
-      );
-      const imageUpload = await umi.uploader.upload([file]);
-      const imageUrl = imageUpload[0];
+      const file = createGenericFile(new Uint8Array(buffer), tokenImage.name, {
+        contentType: tokenImage.type,
+      });
+
+      const uploaded = await umi.uploader.upload([file]);
+      const imageUrl = uploaded[0];
 
       updateProgress("uploading", "Uploading metadata...", 40);
 
@@ -150,32 +140,25 @@ export default function MintForm() {
         description,
         image: imageUrl,
         properties: {
-          files: [
-            { uri: imageUrl, type: tokenImage.type },
-          ],
+          files: [{ uri: imageUrl, type: tokenImage.type }],
           socials: showSocials ? socialLinks : undefined,
         },
       };
 
-      const metadataUri =
-        await umi.uploader.uploadJson(metadata);
+      const metadataUri = await umi.uploader.uploadJson(metadata);
 
       updateProgress("uploading", "Creating token...", 60);
 
       const mintKeypair = generateSigner(umi);
-      const userKey = toPublicKey(publicKey.toBase58());
+      const user = toPublicKey(publicKey.toBase58());
 
       await createMintWithAssociatedToken(umi, {
         mint: mintKeypair,
-        owner: userKey,
+        owner: user,
         amount: mintAmount,
-        decimals: decimalValue,
-        mintAuthority: revokeMintAuthority
-          ? undefined
-          : umi.identity.publicKey,
-        freezeAuthority: revokeFreezeAuthority
-          ? undefined
-          : umi.identity.publicKey,
+        decimals: dec,
+        mintAuthority: revokeMintAuthority ? undefined : umi.identity.publicKey,
+        freezeAuthority: revokeFreezeAuthority ? undefined : umi.identity.publicKey,
       }).sendAndConfirm(umi);
 
       await createFungible(umi, {
@@ -185,14 +168,8 @@ export default function MintForm() {
         symbol: tokenSymbol,
         uri: metadataUri,
         sellerFeeBasisPoints: percentAmount(0),
-        decimals: decimalValue,
-        creators: some([
-          {
-            address: umi.identity.publicKey,
-            share: 100,
-            verified: true,
-          },
-        ]),
+        decimals: dec,
+        creators: some([{ address: umi.identity.publicKey, share: 100, verified: true }]),
         collection: none(),
         uses: none(),
         isMutable: true,
@@ -200,7 +177,7 @@ export default function MintForm() {
 
       const tokenAcc = findAssociatedTokenPda(umi, {
         mint: mintKeypair.publicKey,
-        owner: userKey,
+        owner: user,
       });
 
       setTokenData({
@@ -210,261 +187,263 @@ export default function MintForm() {
       });
 
       updateProgress("done", "Token created!", 100);
-    } catch (e) {
+    } catch (err) {
+      console.error(err);
       updateProgress("error", "Error creating token", 0);
-      console.error(e);
     }
-
     setIsLoading(false);
   };
 
+  const ProgressIndicator = () => {
+    if (uploadProgress.status === "idle") return null;
+    const bg =
+      uploadProgress.status === "done"
+        ? "bg-green-500"
+        : uploadProgress.status === "error"
+        ? "bg-red-500"
+        : "bg-[#7C3AED]";
+    return (
+      <div className="mt-3">
+        <div className="flex justify-between text-sm mb-1">
+          <span className="text-gray-300">{uploadProgress.message}</span>
+          <span className="text-gray-400">{uploadProgress.progress}%</span>
+        </div>
+        <div className="w-full h-2 rounded-full bg-black/50">
+          <div className={`h-2 rounded-full ${bg}`} style={{ width: `${uploadProgress.progress}%` }} />
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#060510] to-[#02020a] flex items-start justify-center p-6">
-      <div className="w-full max-w-[620px]">
+    <div className="min-h-screen bg-gradient-to-br from-[#060510] to-[#02020a] flex justify-center p-6">
+      <div className="w-full max-w-[520px]">
         <div className="mintx-card relative">
-          <div className="mintx-gradient-border"></div>
+          <div className="mintx-gradient-border" />
 
           <h2 className="mintx-title"
             style={{
               background: "linear-gradient(90deg,#7C3AED,#EC4899)",
               WebkitBackgroundClip: "text",
-              color: "transparent"
+              color: "transparent",
             }}>
             Token Details
           </h2>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4">
 
-            {/* EXACT GRID MATCHING YOUR SCREENSHOT */}
-            <div
-              className="grid gap-4"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 240px",
-                gridTemplateRows: "auto auto auto",
-              }}
-            >
+            {/* EXACT LAYOUT MATCHING YOUR IMAGE */}
+            <div className="grid grid-cols-2 gap-4">
 
-              {/* NAME */}
-              <div>
-                <label className="mintx-label">Name</label>
-                <input
-                  className="mintx-input"
-                  value={tokenName}
-                  onChange={(e) => setTokenName(e.target.value)}
-                />
+              {/* LEFT COLUMN */}
+              <div className="flex flex-col space-y-4">
+
+                <div>
+                  <label className="mintx-label">Name</label>
+                  <input className="mintx-input" value={tokenName} onChange={(e)=>setTokenName(e.target.value)} />
+                </div>
+
+                <div>
+                  <label className="mintx-label">Symbol</label>
+                  <input className="mintx-input" value={tokenSymbol} onChange={(e)=>setTokenSymbol(e.target.value)} />
+                </div>
+
+                <div>
+                  <label className="mintx-label">Decimals</label>
+                  <input className="mintx-input" value={decimals} onChange={(e)=>setDecimals(e.target.value)} />
+                </div>
+
+                <div>
+                  <label className="mintx-label">Supply</label>
+                  <input className="mintx-input" value={initialSupply} onChange={(e)=>setInitialSupply(e.target.value)} />
+                </div>
+
               </div>
 
-              {/* SYMBOL */}
-              <div>
-                <label className="mintx-label">Symbol</label>
-                <input
-                  className="mintx-input"
-                  value={tokenSymbol}
-                  onChange={(e) => setTokenSymbol(e.target.value)}
-                />
-              </div>
-
-              {/* DECIMALS */}
-              <div>
-                <label className="mintx-label">Decimals</label>
-                <input
-                  type="number"
-                  className="mintx-input"
-                  value={decimals}
-                  onChange={(e) => setDecimals(e.target.value)}
-                />
-              </div>
-
-              {/* IMAGE BOX (SPANS DECIMALS + SUPPLY HEIGHT) */}
-              <div
-                style={{
-                  gridRow: "2 / 4",
-                  gridColumn: "2 / 3",
-                  borderRadius: 20,
-                  background: "#071029",
-                  border: "1px solid rgba(255,255,255,0.06)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  height: "100%",
-                  minHeight: 200,
-                }}
-                onClick={() => fileInputRef.current?.click()}
-                className="cursor-pointer"
-              >
-                {!imagePreview ? (
-                  <div
-                    style={{
-                      width: 140,
-                      height: 140,
-                      borderRadius: "50%",
-                      background: "rgba(255,255,255,0.05)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <svg
-                      width="38"
-                      height="38"
-                      viewBox="0 0 24 24"
-                      stroke="white"
-                      strokeWidth={2}
-                      fill="none"
-                      className="opacity-40"
-                    >
-                      <path d="M12 4v16m8-8H4" />
-                    </svg>
-                  </div>
-                ) : (
-                  <img
-                    src={imagePreview}
-                    style={{
-                      width: 140,
-                      height: 140,
-                      borderRadius: "50%",
-                      objectFit: "cover",
-                    }}
-                  />
-                )}
-              </div>
-
-              {/* SUPPLY */}
-              <div>
-                <label className="mintx-label">Supply</label>
-                <input
-                  className="mintx-input"
-                  value={initialSupply}
-                  onChange={(e) => setInitialSupply(e.target.value)}
-                />
+              {/* RIGHT COLUMN IMAGE — EXACT FULL HEIGHT MATCH */}
+              <div className="flex justify-center items-start">
+                <div
+                  onClick={() => fileInputRef.current?.click()}
+                  className="cursor-pointer rounded-xl bg-[#0b0f1a] border border-white/10 p-4 flex justify-center items-center"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    minHeight: "180px",
+                  }}
+                >
+                  {!imagePreview ? (
+                    <div className="w-28 h-28 rounded-full bg-[#111827] flex items-center justify-center opacity-40">
+                      <span className="text-3xl text-white/40">+</span>
+                    </div>
+                  ) : (
+                    <img
+                      src={imagePreview}
+                      style={{
+                        width: "150px",
+                        height: "150px",
+                        borderRadius: "9999px",
+                        objectFit: "cover",
+                      }}
+                    />
+                  )}
+                </div>
               </div>
 
             </div>
+
+            {/* FILE INPUT */}
+            <input ref={fileInputRef} type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
 
             {/* DESCRIPTION */}
             <div>
               <label className="mintx-label">Description</label>
-              <textarea
-                className="mintx-input mintx-textarea"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
+              <textarea className="mintx-input mintx-textarea" value={description} onChange={(e)=>setDescription(e.target.value)} />
             </div>
 
-            <input
-              type="file"
-              ref={fileInputRef}
-              className="hidden"
-              accept="image/*"
-              onChange={handleImageChange}
-            />
+            {/* RESTORED EXACT REVOKE FREEZE + REVOKE MINT */}
+            <div className="grid grid-cols-2 gap-4">
 
-            {/* TOGGLES */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-              <div className="mintx-toggle-card">
-                <h3 className="mintx-toggle-title">
+              <div className="mintx-toggle-card p-3 rounded-lg bg-[#071029]">
+                <h3 className="text-sm font-semibold text-white">
                   Revoke Freeze <span className="text-xs text-gray-400">(required)</span>
                 </h3>
-                <p className="mintx-toggle-desc">
-                  Required to create liquidity pool
+                <p className="text-xs text-gray-400 mt-1">
+                  Revoke Freeze allows you to create a liquidity pool
                 </p>
-                <div className="toggle-row">
+                <div className="flex justify-between items-center mt-3">
                   <Switch
                     checked={revokeFreezeAuthority}
                     onChange={setRevokeFreezeAuthority}
-                    className={`switch ${revokeFreezeAuthority ? "switch-on" : "switch-off"}`}
+                    className={`relative inline-flex h-6 w-11 rounded-full transition-all duration-300 ${
+                      revokeFreezeAuthority ? "bg-teal-400" : "bg-gray-700"
+                    }`}
                   >
-                    <span className={`switch-handle ${revokeFreezeAuthority ? "switch-handle-on" : ""}`} />
+                    <span
+                      className={`inline-block h-4 w-4 bg-white rounded-full transform transition-all ${
+                        revokeFreezeAuthority ? "translate-x-6" : "translate-x-1"
+                      }`}
+                    />
                   </Switch>
-                  <span className="cost-tag">(0.1 SOL)</span>
+                  <span className="text-xs text-gray-300">(0.1 SOL)</span>
                 </div>
               </div>
 
-              <div className="mintx-toggle-card">
-                <h3 className="mintx-toggle-title">Revoke Mint</h3>
-                <p className="mintx-toggle-desc">
-                  Prevent future supply increase
+              <div className="mintx-toggle-card p-3 rounded-lg bg-[#071029]">
+                <h3 className="text-sm font-semibold text-white">Revoke Mint</h3>
+                <p className="text-xs text-gray-400 mt-1">
+                  Mint Authority allows you to increase tokens supply
                 </p>
-                <div className="toggle-row">
+                <div className="flex justify-between items-center mt-3">
                   <Switch
                     checked={revokeMintAuthority}
                     onChange={setRevokeMintAuthority}
-                    className={`switch ${revokeMintAuthority ? "switch-on" : "switch-off"}`}
+                    className={`relative inline-flex h-6 w-11 rounded-full transition-all duration-300 ${
+                      revokeMintAuthority ? "bg-purple-600" : "bg-gray-700"
+                    }`}
                   >
-                    <span className={`switch-handle ${revokeMintAuthority ? "switch-handle-on" : ""}`} />
+                    <span
+                      className={`inline-block h-4 w-4 bg-white rounded-full transform transition-all ${
+                        revokeMintAuthority ? "translate-x-6" : "translate-x-1"
+                      }`}
+                    />
                   </Switch>
-                  <span className="cost-tag">(0.1 SOL)</span>
+                  <span className="text-xs text-gray-300">(0.1 SOL)</span>
                 </div>
               </div>
 
             </div>
 
-            {/* SUBMIT */}
-            <button
-              type="submit"
-              className="mintx-submit"
-              disabled={!publicKey || !tokenImage || isLoading}
-            >
-              {!publicKey
-                ? "Connect Wallet"
-                : isLoading
-                ? "Processing..."
-                : "Create Token"}
-            </button>
+            {/* SOCIAL LINKS TOGGLE — RESTORED EXACT */}
+            <div className="mintx-toggle-card flex justify-between items-center p-3 rounded-lg bg-[#071029]">
+              <div>
+                <h3 className="text-sm font-semibold text-white">Add Social Links</h3>
+                <p className="text-xs text-gray-400">Optional but recommended</p>
+              </div>
+              <Switch
+                checked={showSocials}
+                onChange={setShowSocials}
+                className={`relative inline-flex h-6 w-11 rounded-full transition-all duration-300 ${
+                  showSocials ? "bg-[#7C3AED]" : "bg-gray-700"
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 rounded-full bg-white transform transition-all ${
+                    showSocials ? "translate-x-6" : "translate-x-1"
+                  }`}
+                />
+              </Switch>
+            </div>
 
-            {/* SUCCESS BOX */}
-            {tokenData && (
-              <div className="mintx-small-box">
-                <h3 className="mintx-success-title">
-                  Token Created Successfully!
-                </h3>
-                <div className="space-y-2">
-                  <div>
-                    <label className="mintx-label">
-                      Mint Address
-                    </label>
-                    <div className="mintx-output">
-                      {tokenData.mint}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="mintx-label">
-                      Metadata URI
-                    </label>
-                    <div className="mintx-output">
-                      {tokenData.metadata}
-                    </div>
-                  </div>
+            {showSocials && (
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="mintx-label">Website</label>
+                  <input className="mintx-input" value={socialLinks.website} onChange={(e)=>handleSocialChange("website", e.target.value)} />
+                </div>
+                <div>
+                  <label className="mintx-label">Twitter</label>
+                  <input className="mintx-input" value={socialLinks.twitter} onChange={(e)=>handleSocialChange("twitter", e.target.value)} />
+                </div>
+                <div>
+                  <label className="mintx-label">Telegram</label>
+                  <input className="mintx-input" value={socialLinks.telegram} onChange={(e)=>handleSocialChange("telegram", e.target.value)} />
+                </div>
+                <div>
+                  <label className="mintx-label">Discord</label>
+                  <input className="mintx-input" value={socialLinks.discord} onChange={(e)=>handleSocialChange("discord", e.target.value)} />
                 </div>
               </div>
             )}
 
-            {/* COST BOX */}
-            <div className="mintx-small-box text-center">
-              Total Cost:{" "}
-              {(
-                BASE_FEE +
-                (revokeMintAuthority ? MINT_AUTHORITY_FEE : 0) +
-                (revokeFreezeAuthority ? FREEZE_AUTHORITY_FEE : 0)
-              ).toFixed(3)}{" "}
-              SOL
-              <div className="text-xs mt-2 space-y-1">
-                <div>Base Fee: {BASE_FEE} SOL</div>
-                {revokeMintAuthority && (
-                  <div>Revoke Mint: {MINT_AUTHORITY_FEE} SOL</div>
-                )}
-                {revokeFreezeAuthority && (
-                  <div>
-                    Revoke Freeze: {FREEZE_AUTHORITY_FEE} SOL
-                  </div>
-                )}
-              </div>
-            </div>
+            <ProgressIndicator />
+
+            <button
+              type="submit"
+              disabled={!publicKey || isLoading || !tokenImage}
+              className="mintx-submit w-full mt-2 py-3 bg-gradient-to-r from-[#7C3AED] to-[#EC4899] rounded-lg text-white text-sm font-medium"
+            >
+              {!publicKey ? "Connect Wallet" : isLoading ? "Processing..." : "Create Token"}
+            </button>
 
           </form>
+
+          {/* SUCCESS BOX */}
+          {tokenData && (
+            <div className="mintx-small-box mt-4 p-3 rounded-lg bg-[#071029]">
+              <h3
+                className="text-lg font-semibold mb-2"
+                style={{
+                  background: "linear-gradient(90deg,#7C3AED,#EC4899)",
+                  WebkitBackgroundClip: "text",
+                  color: "transparent",
+                }}
+              >
+                Token Created Successfully!
+              </h3>
+              <div className="space-y-2">
+                <div>
+                  <label className="mintx-label">Mint Address</label>
+                  <div className="bg-[#0b1230] p-2 rounded-md text-sm text-gray-300 break-all">{tokenData.mint}</div>
+                </div>
+                <div>
+                  <label className="mintx-label">Metadata URI</label>
+                  <div className="bg-[#0b1230] p-2 rounded-md text-sm text-gray-300 break-all">{tokenData.metadata}</div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TOTAL COST BOX */}
+          <div className="mintx-small-box mt-3 text-center p-3 bg-[#071029] rounded-lg">
+            Total Cost:{" "}
+            {(
+              BASE_FEE +
+              (revokeMintAuthority ? MINT_AUTHORITY_FEE : 0) +
+              (revokeFreezeAuthority ? FREEZE_AUTHORITY_FEE : 0)
+            ).toFixed(3)}{" "}
+            SOL
+          </div>
+
         </div>
       </div>
     </div>
