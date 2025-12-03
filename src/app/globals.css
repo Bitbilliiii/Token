@@ -62,9 +62,9 @@ header, .site-header {
   border-radius: 16px;
   overflow: visible;
   background: linear-gradient(180deg, #071029 0%, #05061a 100%);
-  border: 1px solid rgba(255,255,255,0.04);
-  box-shadow: 0 12px 40px rgba(2,6,23,0.7);
-  padding: 20px;
+  border: 1px solid #8036ff;
+  box-shadow: 0 12px 40px rgba(43,83,255,0.7);
+  padding: 10px;
 }
 
 /* subtle neon thin stroke */
