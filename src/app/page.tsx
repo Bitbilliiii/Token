@@ -56,10 +56,10 @@ export default function Home() {
             {/* Hero Section */}
             <div className="text-center mb-8 space-y-4">
               <h1 className="text-4xl font-bold bg-gradient-to-r from-[#7C3AED] via-[#EC4899] to-[#3B82F6] bg-clip-text text-transparent">
-                Create Your Solana Token
+                Create Your Solana Token In Mins
               </h1>
               <h2 className="text-3xl text-white/90 font-light">
-                in Minutes
+                Cheapest Tool
               </h2>
               <p className="text-gray-300 max-w-2xl mx-auto text-lg">
                 Launch your Solana token with zero coding required. Secure, fast, and
