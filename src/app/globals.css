@@ -51,144 +51,185 @@ header, .site-header {
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
 }
 
-/* -------------------
-   MINTX STYLES (paste in global.css)
-   Prefixes: mintx-*
-   Matches Orion form visuals and spacing
-   ------------------- */
+/* -----------------------
+   MINTX UI (paste into global.css)
+   Prefix: mintx-*
+   ----------------------- */
 
-/* Card container */
-.mintx-card { position: relative; border-radius: 16px; overflow: visible; }
+/* Card & neon stroke */
+.mintx-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: visible;
+  background: linear-gradient(180deg, #071029 0%, #05061a 100%);
+  border: 1px solid rgba(255,255,255,0.04);
+  box-shadow: 0 12px 40px rgba(2,6,23,0.7);
+  padding: 20px;
+}
 
-/* Neon thin stroke behind card (subtle) */
-.mintx-neon {
-  background: linear-gradient(135deg, rgba(124,58,237,0.14), rgba(236,72,153,0.06));
+/* subtle neon thin stroke */
+.mintx-gradient-border {
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(124,58,237,0.14), rgba(236,72,153,0.06));
   mix-blend-mode: screen;
   z-index: 0;
-  filter: blur(0.6px);
 }
 
-/* Inputs */
+/* Title */
+.mintx-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  z-index: 2;
+}
+
+/* Grid layout for main form (fixed 2 columns) */
+.mintx-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto;
+  gap: 10px;
+  z-index: 2;
+}
+
+/* Placeholders for explicit grid placement */
+.mintx-grid .g-name { grid-column: 1; grid-row: 1; }
+.mintx-grid .g-symbol { grid-column: 2; grid-row: 1; }
+.mintx-grid .g-decimals { grid-column: 1; grid-row: 2; }
+.mintx-grid .g-image { grid-column: 2; grid-row: 2 / span 2; } /* spans two rows on right */
+.mintx-grid .g-supply { grid-column: 1; grid-row: 3; }
+
+/* Labels and inputs */
+.mintx-label { display:block; font-size:13px; color:#d6e3ff; margin-bottom:6px; }
 .mintx-input {
-  width: 100%;
-  background: linear-gradient(180deg, rgba(10,14,30,0.9), rgba(10,14,30,0.85));
-  padding: 12px 14px;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.03);
-  color: #e6eefc;
-  font-size: 14px;
-  outline: none;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.01);
+  width:100%;
+  background: linear-gradient(180deg,#0b1330,#060a20);
+  border-radius:12px;
+  padding:11px 12px;
+  color:#e8f0ff;
+  border:1px solid rgba(255,255,255,0.03);
+  font-size:14px;
+  outline:none;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
 }
+.mintx-input::placeholder { color: rgba(255,255,255,0.18); }
 
-/* Textarea */
-.mintx-textarea { min-height: 76px; resize: none; }
+/* textarea */
+.mintx-textarea { min-height:74px; resize:none; padding-top:10px; padding-bottom:10px; }
 
-/* Input focus */
+/* Focus ring */
 .mintx-input:focus, .mintx-textarea:focus {
-  border-color: rgba(124,58,237,0.9);
-  box-shadow: 0 6px 20px rgba(124,58,237,0.12);
+  box-shadow: 0 8px 26px rgba(124,58,237,0.12);
+  border-color: rgba(124,58,237,0.85);
 }
 
-/* Image upload box — EXACT Orion size (112px high), radius 16px */
+/* Image upload box — perfect square using aspect-ratio */
 .mintx-image-box {
-  width: 100%;
-  height: 112px;              /* EXACT height requested */
-  background: linear-gradient(180deg, #081229 0%, #06122a 100%);
-  border-radius: 16px;        /* radius as specified */
-  border: 1px solid rgba(255,255,255,0.03);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  overflow: hidden;
+  width:100%;
+  aspect-ratio: 1 / 1;       /* perfect square responsive */
+  background: linear-gradient(180deg, #07112b, #061028);
+  border-radius: 16px;       /* match radius */
+  border:1px solid rgba(255,255,255,0.03);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  overflow:hidden;
+  position:relative;
+}
+.mintx-image-box img { width:100%; height:100%; object-fit:cover; display:block; }
+
+/* Upload icon */
+.mintx-upload-icon { font-size:22px; color: rgba(255,255,255,0.9); }
+
+/* Toggles (Freeze/Mint) container */
+.mintx-toggle-grid {
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:10px;
+}
+@media (max-width: 420px) {
+  .mintx-toggle-grid { grid-template-columns: 1fr; } /* stack on mobile */
 }
 
-/* image inside */
-.mintx-image-box img { width: 100%; height: 100%; object-fit: cover; }
-
-/* Upload icon styling */
-.mintx-image-box svg { color: rgba(255,255,255,0.9); }
-
-/* Toggle card block */
+/* toggle card */
 .mintx-toggle-card {
   background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  padding: 12px;
+  padding: 10px;
   border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.02);
+  border:1px solid rgba(255,255,255,0.02);
 }
 
-/* Switch base */
+/* switch base */
 .mintx-switch {
-  width: 44px;
-  height: 24px;
-  background: #1b2130;
-  border-radius: 999px;
-  display: inline-flex;
-  align-items: center;
-  padding: 2px;
-  cursor: pointer;
-  position: relative;
-  flex-shrink: 0;
+  width:44px;
+  height:24px;
+  background:#18212f;
+  border-radius:999px;
+  padding:2px;
+  display:inline-flex;
+  align-items:center;
+  position:relative;
+  cursor:pointer;
+  transition: background .12s;
 }
 
-/* Switch active gradient */
+/* active styles - two different colors allowed; apply via style/class in JSX */
 .mintx-switch-active {
-  background: linear-gradient(90deg, #7C3AED, #EC4899);
+  background: linear-gradient(90deg,#7C3AED,#EC4899);
 }
 
-/* Switch handle */
 .mintx-switch-handle {
-  width: 18px;
-  height: 18px;
-  background: #fff;
-  border-radius: 999px;
+  position:relative;
+  width:18px;
+  height:18px;
+  border-radius:999px;
+  background:white;
   transform: translateX(0);
   transition: transform .16s cubic-bezier(.2,.8,.2,1);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.45);
-  position: relative;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.45);
 }
 
-/* helper class to translate handle (applied in JSX) */
+/* helper class to translate handle */
 .mintx-translate { transform: translateX(20px); }
 
-/* Switch wrapper for spacing */
+/* switch wrap */
 .mintx-switch-wrap { display:flex; align-items:center; gap:8px; }
 
-/* Submit button */
+/* submit button */
 .mintx-submit {
-  background: linear-gradient(90deg, #7C3AED, #EC4899);
-  padding: 12px 14px;
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 14px;
-  border: none;
-  color: #fff;
-  transition: filter .12s;
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  background: linear-gradient(90deg,#7C3AED,#EC4899);
+  color:#fff;
+  border:none;
+  font-weight:600;
+  font-size:14px;
+  cursor:pointer;
 }
-.mintx-submit:hover { filter: brightness(1.06); }
-.mintx-submit[disabled] { opacity: 0.5; cursor: not-allowed; }
+.mintx-submit[disabled] { opacity:.5; cursor:not-allowed; }
 
-/* small text / placeholders */
-.mintx-card label { font-size: 13px; color: #cfe0ff; }
-.mintx-card .text-xs { color: #b8c6e8; }
-.mintx-card .mintx-input::placeholder { color: rgba(255,255,255,0.18); }
+/* progress bar small */
+.mintx-progress { margin-top:8px; }
+.mintx-small-box { background:#07112b; padding:8px; border-radius:10px; border:1px solid rgba(23,36,59,0.6); color:#afc6ff; font-size:13px; }
 
-/* reduce spacing on narrow screens (fits like Orion) */
-@media (max-width: 420px) {
-  .mintx-card { padding: 14px; max-width: 360px; }
-  .mintx-image-box { height: 112px; border-radius: 12px; }
-  .mintx-input { padding: 10px 12px; border-radius: 10px; font-size: 13px; }
-  .mintx-textarea { min-height: 64px; }
+/* responsive padding reductions */
+@media (max-width:420px) {
+  .mintx-card { padding:12px; border-radius:12px; }
+  .mintx-input { padding:9px 10px; border-radius:10px; font-size:13px; }
+  .mintx-textarea { min-height:64px; }
+  .mintx-image-box { border-radius:12px; }
 }
 
-/* clickable area and mobile touch friendliness */
-.mintx-switch, .mintx-switch * { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
-/* ensure file input is clickable and not blocked */
-input[type="file"].sr-only { position: absolute !important; left: -9999px; top: -9999px; }
+/* prevent touch highlight */
+.mintx-switch, .mintx-switch * { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 
-/* visual polish for created box */
-.mintx-card .bg-[#07112b] { background: #07112b; }
+/* file input hide but keep clickable via label/JS */
+input[type="file"].sr-only { position:absolute !important; left:-9999px; top:-9999px; }
 
 
 /* ------------------------------- */
