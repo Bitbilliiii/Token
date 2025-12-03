@@ -54,8 +54,8 @@ interface TokenData {
 }
 
 export default function MintForm() {
+  // ----- PRESERVED LOGIC & IMPORTS -----
   const { publicKey, sendTransaction } = useWallet();
-
   const { umi } = useUmiStore();
   const [tokenName, setTokenName] = useState('');
   const [tokenSymbol, setTokenSymbol] = useState('');
@@ -395,19 +395,20 @@ export default function MintForm() {
     });
   };
 
+  // ----- UI: updated for Orion-like layout (mintx- prefixed classes)
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#060510] to-[#02020a] flex items-start md:items-center justify-center p-6">
       <div className="w-full max-w-[480px]">
         {/* Card */}
-        <div className="relative rounded-[18px] p-5 border border-[rgba(255,255,255,0.04)] shadow-[0_12px_40px_rgba(0,0,0,0.6)] bg-[#0b0c15] overflow-visible mintx-card">
+        <div className="relative rounded-[16px] p-6 border border-[rgba(255,255,255,0.04)] shadow-[0_12px_40px_rgba(0,0,0,0.6)] bg-[#0b0c15] overflow-visible mintx-card">
           {/* neon stroke */}
-          <div className="absolute inset-0 rounded-[18px] pointer-events-none mintx-neon" />
+          <div className="absolute inset-0 rounded-[16px] pointer-events-none mintx-neon" />
           <div className="relative z-10">
-            <h2 className="text-2xl font-semibold mb-4 bg-gradient-to-r from-[#7C3AED] to-[#EC4899] bg-clip-text text-transparent">
+            <h2 className="text-2xl font-semibold mb-5 bg-gradient-to-r from-[#7C3AED] to-[#EC4899] bg-clip-text text-transparent">
               Token Details
             </h2>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-3">
               {!publicKey && (
                 <div className="text-center py-2 mb-2">
                   <p className="text-gray-400">Please connect your wallet to continue</p>
@@ -457,7 +458,7 @@ export default function MintForm() {
                   />
                 </div>
 
-                {/* Image box */}
+                {/* Image box (exact Orion size: height ~112px) */}
                 <div>
                   <label className="block text-sm text-gray-200 mb-2">Image</label>
 
@@ -517,43 +518,49 @@ export default function MintForm() {
               {/* Toggles area (two-column fixed) */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="mintx-toggle-card">
-                  <div className="flex items-start justify-between w-full">
-                    <div className="pr-2">
-                      <h3 className="text-sm font-medium text-white">Revoke Freeze <span className="text-xs text-gray-400">(required)</span></h3>
-                      <p className="text-xs text-gray-400 mt-1">Revoke Freeze allows you to create a liquidity pool</p>
+                  <div className="flex flex-col">
+                    <div className="flex items-start justify-between">
+                      <div className="pr-2">
+                        <h3 className="text-sm font-medium text-white">Revoke Freeze <span className="text-xs text-gray-400">(required)</span></h3>
+                      </div>
                     </div>
-                    <div className="flex flex-col items-end">
+                    <p className="text-xs text-gray-400 mt-2">Revoke Freeze allows you to create a liquidity pool</p>
+
+                    <div className="flex items-center justify-between mt-3">
                       <div className="mintx-switch-wrap">
                         <Switch
                           checked={revokeFreezeAuthority}
                           onChange={setRevokeFreezeAuthority}
                           className={`${revokeFreezeAuthority ? 'mintx-switch-active' : 'mintx-switch'}`}
                         >
-                          <span className={`${revokeFreezeAuthority ? 'mintx-switch-handle translate-x-[22px]' : 'mintx-switch-handle'}`} />
+                          <span className={`${revokeFreezeAuthority ? 'mintx-switch-handle mintx-translate' : 'mintx-switch-handle'}`} />
                         </Switch>
                       </div>
-                      <div className="text-xs text-gray-400 mt-2">(0.1 SOL)</div>
+                      <div className="text-xs text-gray-400">(0.1 SOL)</div>
                     </div>
                   </div>
                 </div>
 
                 <div className="mintx-toggle-card">
-                  <div className="flex items-start justify-between w-full">
-                    <div className="pr-2">
-                      <h3 className="text-sm font-medium text-white">Revoke Mint</h3>
-                      <p className="text-xs text-gray-400 mt-1">Mint Authority allows you to increase tokens supply</p>
+                  <div className="flex flex-col">
+                    <div className="flex items-start justify-between">
+                      <div className="pr-2">
+                        <h3 className="text-sm font-medium text-white">Revoke Mint</h3>
+                      </div>
                     </div>
-                    <div className="flex flex-col items-end">
+                    <p className="text-xs text-gray-400 mt-2">Mint Authority allows you to increase tokens supply</p>
+
+                    <div className="flex items-center justify-between mt-3">
                       <div className="mintx-switch-wrap">
                         <Switch
                           checked={revokeMintAuthority}
                           onChange={setRevokeMintAuthority}
                           className={`${revokeMintAuthority ? 'mintx-switch-active' : 'mintx-switch'}`}
                         >
-                          <span className={`${revokeMintAuthority ? 'mintx-switch-handle translate-x-[22px]' : 'mintx-switch-handle'}`} />
+                          <span className={`${revokeMintAuthority ? 'mintx-switch-handle mintx-translate' : 'mintx-switch-handle'}`} />
                         </Switch>
                       </div>
-                      <div className="text-xs text-gray-400 mt-2">(0.1 SOL)</div>
+                      <div className="text-xs text-gray-400">(0.1 SOL)</div>
                     </div>
                   </div>
                 </div>
@@ -570,7 +577,7 @@ export default function MintForm() {
                   onChange={setShowSocials}
                   className={`${showSocials ? 'mintx-switch-active' : 'mintx-switch'}`}
                 >
-                  <span className={`${showSocials ? 'mintx-switch-handle translate-x-[22px]' : 'mintx-switch-handle'}`} />
+                  <span className={`${showSocials ? 'mintx-switch-handle mintx-translate' : 'mintx-switch-handle'}`} />
                 </Switch>
               </div>
 
