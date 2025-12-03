@@ -62,9 +62,8 @@ export default function Home() {
                 Cheapest Tool
               </h2>
               <p className="text-gray-300 max-w-2xl mx-auto text-lg">
-                Launch your Solana token with zero coding required. Secure, fast, and
-                customizable token creation platform for the next generation of crypto
-                projects.
+                The perfect tool to create Solana SPL tokens.
+                Simple, user friendly, and fast.
               </p>
             </div>
 
