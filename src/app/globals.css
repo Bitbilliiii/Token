@@ -51,62 +51,74 @@ header, .site-header {
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
 }
 
-/* MINTX UI - drop into global.css */
+/* -------------------
+   MINTX STYLES (paste in global.css)
+   Prefixes: mintx-*
+   Matches Orion form visuals and spacing
+   ------------------- */
 
-/* Card neon stroke helper */
-.mintx-card { position: relative; }
+/* Card container */
+.mintx-card { position: relative; border-radius: 16px; overflow: visible; }
+
+/* Neon thin stroke behind card (subtle) */
 .mintx-neon {
-  /* thin neon rounded stroke like Orion */
-  background: linear-gradient(135deg, rgba(124,58,237,0.18), rgba(236,72,153,0.08));
+  background: linear-gradient(135deg, rgba(124,58,237,0.14), rgba(236,72,153,0.06));
   mix-blend-mode: screen;
-  z-index: 2;
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+  z-index: 0;
+  filter: blur(0.6px);
 }
 
-/* input base */
+/* Inputs */
 .mintx-input {
   width: 100%;
-  background: #0b1230;
-  padding: 10px 12px;
+  background: linear-gradient(180deg, rgba(10,14,30,0.9), rgba(10,14,30,0.85));
+  padding: 12px 14px;
   border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.03);
   color: #e6eefc;
   font-size: 14px;
   outline: none;
-  transition: box-shadow .15s, border-color .15s;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.01);
 }
 
-/* reduce default textarea height and match design */
-.mintx-textarea { min-height: 72px; resize: none; padding-top: 10px; padding-bottom: 10px; }
+/* Textarea */
+.mintx-textarea { min-height: 76px; resize: none; }
 
-/* focus glow */
+/* Input focus */
 .mintx-input:focus, .mintx-textarea:focus {
-  box-shadow: 0 4px 16px rgba(124,58,237,0.18);
-  border-color: rgba(124,58,237,0.8);
+  border-color: rgba(124,58,237,0.9);
+  box-shadow: 0 6px 20px rgba(124,58,237,0.12);
 }
 
-/* Image upload box */
+/* Image upload box — EXACT Orion size (112px high), radius 16px */
 .mintx-image-box {
   width: 100%;
-  height: 72px;
-  background: linear-gradient(180deg, rgba(13,17,48,1), rgba(9,12,32,1));
+  height: 112px;              /* EXACT height requested */
+  background: linear-gradient(180deg, #081229 0%, #06122a 100%);
+  border-radius: 16px;        /* radius as specified */
   border: 1px solid rgba(255,255,255,0.03);
-  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  overflow: hidden;
 }
 
-/* Toggle cards */
+/* image inside */
+.mintx-image-box img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Upload icon styling */
+.mintx-image-box svg { color: rgba(255,255,255,0.9); }
+
+/* Toggle card block */
 .mintx-toggle-card {
-  background: rgba(255,255,255,0.02);
-  padding: 10px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  padding: 12px;
   border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.02);
 }
 
-/* Switch base and active */
+/* Switch base */
 .mintx-switch {
   width: 44px;
   height: 24px;
@@ -116,34 +128,37 @@ header, .site-header {
   align-items: center;
   padding: 2px;
   cursor: pointer;
-  transition: background .18s;
   position: relative;
   flex-shrink: 0;
 }
 
-/* active gradient */
+/* Switch active gradient */
 .mintx-switch-active {
   background: linear-gradient(90deg, #7C3AED, #EC4899);
 }
 
-/* handle circle */
+/* Switch handle */
 .mintx-switch-handle {
   width: 18px;
   height: 18px;
   background: #fff;
   border-radius: 999px;
   transform: translateX(0);
-  transition: transform .18s cubic-bezier(.2,.8,.2,1);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  transition: transform .16s cubic-bezier(.2,.8,.2,1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.45);
+  position: relative;
 }
 
-/* translation when active is applied via adding translate-x style in JSX; the above rules keep transition */
-.mintx-switch-wrap { display:flex; align-items:center; justify-content:center; }
+/* helper class to translate handle (applied in JSX) */
+.mintx-translate { transform: translateX(20px); }
 
-/* submit button */
+/* Switch wrapper for spacing */
+.mintx-switch-wrap { display:flex; align-items:center; gap:8px; }
+
+/* Submit button */
 .mintx-submit {
   background: linear-gradient(90deg, #7C3AED, #EC4899);
-  padding: 11px 14px;
+  padding: 12px 14px;
   border-radius: 12px;
   font-weight: 600;
   font-size: 14px;
@@ -152,28 +167,27 @@ header, .site-header {
   transition: filter .12s;
 }
 .mintx-submit:hover { filter: brightness(1.06); }
+.mintx-submit[disabled] { opacity: 0.5; cursor: not-allowed; }
 
-/* small helpers */
-.mintx-card .text-sm { font-size: 13px; }
-.mintx-card label { font-size: 13px; }
-.mintx-card .mintx-input::placeholder { color: rgba(255,255,255,0.22); }
+/* small text / placeholders */
+.mintx-card label { font-size: 13px; color: #cfe0ff; }
+.mintx-card .text-xs { color: #b8c6e8; }
+.mintx-card .mintx-input::placeholder { color: rgba(255,255,255,0.18); }
 
-/* reduce spacing so mobile fits without heavy scroll */
+/* reduce spacing on narrow screens (fits like Orion) */
 @media (max-width: 420px) {
   .mintx-card { padding: 14px; max-width: 360px; }
-  .mintx-input { padding: 9px 10px; border-radius: 10px; font-size: 13px; }
+  .mintx-image-box { height: 112px; border-radius: 12px; }
+  .mintx-input { padding: 10px 12px; border-radius: 10px; font-size: 13px; }
   .mintx-textarea { min-height: 64px; }
-  .mintx-image-box { height: 62px; }
-  .mintx-neon { display:block; border-radius: 14px; }
 }
 
-/* ensure switches have a large hit area and do not get blocked on mobile */
+/* clickable area and mobile touch friendliness */
 .mintx-switch, .mintx-switch * { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
-
-/* ensure file input can receive clicks on mobile */
+/* ensure file input is clickable and not blocked */
 input[type="file"].sr-only { position: absolute !important; left: -9999px; top: -9999px; }
 
-/* small visual polish for created box */
+/* visual polish for created box */
 .mintx-card .bg-[#07112b] { background: #07112b; }
 
 
