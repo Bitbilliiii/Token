@@ -291,8 +291,8 @@ export default function MintForm() {
                     <img
                       src={imagePreview}
                       style={{
-                        width: "150px",
-                        height: "150px",
+                        width: "125px",
+                        height: "125px",
                         borderRadius: "9999px",
                         objectFit: "cover",
                       }}
