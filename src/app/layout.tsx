@@ -8,13 +8,13 @@ import { UmiProvider } from "@/providers/umiProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "mintora | Token Creator Tool",
-  description: "Create Solana tokens easily with mintora's Token Creator Tool. No coding required, secure, and fast token creation platform for the Solana blockchain.",
+  title: "MintX | Cheapest Token Creator Tool",
+  description: "Create Solana tokens easily with MintX's Token Creator Tool. No coding required, secure, and fast token creation platform for the Solana blockchain.",
   keywords: "Solana, Token Creator, SPL Token, Cryptocurrency, Blockchain, Web3, DeFi, mintora",
   authors: [{ name: "mintora" }],
   openGraph: {
     title: "mintora | Token Creator Tool",
-    description: "Create Solana tokens easily with mintora's Token Creator Tool. No coding required, secure, and fast token creation platform.",
+    description: "Create Solana tokens easily with MintX's Token Creator Tool. No coding required, secure, and fast token creation platform.",
     url: "https://mintora.xyz",
     siteName: "mintora",
     images: [
