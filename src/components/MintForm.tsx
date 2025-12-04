@@ -331,7 +331,7 @@ export default function MintForm() {
                       }`}
                     />
                   </Switch>
-                  <span className="text-xs text-gray-300">(0.1 SOL)</span>
+                  <span className="text-xs text-gray-300">(0.0123 SOL)</span>
                 </div>
               </div>
 
@@ -352,7 +352,7 @@ export default function MintForm() {
                       }`}
                     />
                   </Switch>
-                  <span className="text-xs text-gray-300">(0.1 SOL)</span>
+                  <span className="text-xs text-gray-300">(0.0123 SOL)</span>
                 </div>
               </div>
             </div>
