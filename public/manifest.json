@@ -1,7 +1,7 @@
 {
-  "name": "mintora Token Creator Tool",
-  "short_name": "mintora",
-  "description": "Create Solana tokens easily with mintora's Token Creator Tool",
+  "name": "MintX Token Creator Tool",
+  "short_name": "MintC",
+  "description": "Create Solana tokens easily with MintX's Token Creator Tool",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#13111C",
